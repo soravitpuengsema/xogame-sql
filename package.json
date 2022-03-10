@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "firebase": "^9.6.8",
+    "mysql2": "^2.3.3",
+    "node": "^17.5.0",
+    "sequelize": "^6.17.0"
+  }
+}
