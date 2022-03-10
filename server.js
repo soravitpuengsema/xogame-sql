@@ -18,10 +18,29 @@ const db = require("./app/models");
 
 db.sequelize.sync();
 
+const xo = db.xo;
+
+var data = {
+    history: JSON.stringify([
+        {
+          squares: Array(9).fill(null)
+        }
+      ]),
+    stepNumber: 0,
+    xIsNext: true,
+    xIP: 0,
+    oIP: 0
+};
+
+xo.create(data);
+
 //simple route
 app.get("/", (req, res) => { // req = request  res = respone
     res.json({ message: "XO Online JA" });
 })
+
+require("./app/routes/xo.routes")(app);
+
 //set port
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

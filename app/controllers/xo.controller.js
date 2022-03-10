@@ -1,12 +1,34 @@
 const db = require("../models");
-const xo_list = db.xo_list;
+const xo = db.xo;
 const Op = db.Sequelize.Op;
 
-exports.findAll = (req, res) => {
-    const title = req.query.title;
-    var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+exports.create = (req, res) => {
 
-    xo_list.findAll({ where: condition })
+    const xo = {
+        history: req.body.history,
+        stepNumber: req.body.stepNumber,
+        xIsNext: req.body.xIsNext ? req.body.xIsNext :false,
+        xIP: req.body.xIP,
+        oIP: req.body.oIP
+    };
+
+    xo.create(xo)
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while creating the Board."
+            });
+        });
+};
+
+exports.findAll = (req, res) => {
+    //const id = req.query.title;
+    var condition = 1;
+
+    xo.findAll({ where: condition })
         .then(data => {
             res.send(data);
         })
@@ -19,9 +41,8 @@ exports.findAll = (req, res) => {
 };
 
 exports.update = (req, res) => {
-    const id = req.params.id;
 
-    xo_list.update(req.body, {
+    xo.update(req.body, {
         where: { id: 1 }
     })
         .then(num => {
@@ -42,3 +63,4 @@ exports.update = (req, res) => {
             });
         });
 };
+

@@ -15,6 +15,8 @@ export default class Game extends React.Component {
         stepNumber: 0,
         xIsNext: true,
       };
+      console.log(this.state.history);
+      this.getDB();
     }
 
     handleClick(i) {
@@ -35,20 +37,20 @@ export default class Game extends React.Component {
         xIsNext: !this.state.xIsNext
       });
 
-      this.updatePriority();
+      this.updateDB();
+      //this.getDB();
     }
 
-    updatePriority() {
+    updateDB() {
         var data = {
-            id: 1,
-            history: this.state.history,
+            history: JSON.stringify(this.state.history),
             stepNumber: this.state.stepNumber,
             xIsNext: this.state.xIsNext,
             xIP: 0,
             oIP: 0
         };
-        console.log(data);
-        XODataService.update(1,data)
+        console.log('update',this.state.history);
+        XODataService.update(data)
         .then(response => {
             console.log(response.data);
             //this.refreshList();
@@ -56,6 +58,25 @@ export default class Game extends React.Component {
         .catch(e => {
             console.log(e);
         });
+    }
+
+    getDB(){
+        XODataService.getAll()
+        .then(response =>{
+            const dbval = Object.values(response.data[0]);
+            //console.log(response.data)
+            console.log('getdb',JSON.parse(dbval[1]));
+            this.setState({
+                history: JSON.parse(dbval[1]),
+                stepNumber: dbval[2],
+                xIsNext: dbval[3],
+                xIP: dbval[4],
+                oIP: dbval[5]
+            });
+        })
+        .catch(e =>{
+            console.log(e);
+        })
     }
   
     jumpTo(step) {

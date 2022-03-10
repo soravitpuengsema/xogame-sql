@@ -2,15 +2,11 @@ import http from "../http-common";
 
 class XODataService {
     getAll() {
-        return http.get("/");
+        return http.get("/xo");
     }
 
-    create(data) {
-        return http.post("/todo", data);
-    }
-
-    update(id,data) {
-        return http.put(`/${id}`, data);
+    update(data) {
+        return http.put(`/xo`, data);
     }
 }
 
