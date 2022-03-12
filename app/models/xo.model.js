@@ -1,7 +1,7 @@
 module.exports = (sequelize, Sequelize) => {
     const Xo = sequelize.define("xo", {
         history: {
-            type: Sequelize.STRING
+            type: Sequelize.TEXT
         },
         stepNumber: {
             type: Sequelize.INTEGER

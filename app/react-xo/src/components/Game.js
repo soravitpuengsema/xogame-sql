@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import XODataService from "../services/xo.service";
 import Board from './Board.js';
 
@@ -14,6 +13,8 @@ export default class Game extends React.Component {
         ],
         stepNumber: 0,
         xIsNext: true,
+        player: null,
+        disable_btn : false
       };
       console.log(this.state.history);
       this.getDB();
@@ -26,6 +27,17 @@ export default class Game extends React.Component {
       if (calculateWinner(squares) || squares[i]) {
         return;
       }
+
+      if(!this.state.xIsNext & (this.state.player == "X")){
+        return;
+      }
+      else if(this.state.xIsNext & (this.state.player == "O")){
+        return;
+      }
+      else if(this.state.player == null){
+        return;
+      }
+
       squares[i] = this.state.xIsNext ? "X" : "O";
       this.setState({
         history: history.concat([
@@ -78,6 +90,17 @@ export default class Game extends React.Component {
             console.log(e);
         })
     }
+
+    componentDidMount(){
+      //this.updateDB()
+      this.getDB()
+      this.interval = setInterval(
+        () => {this.getDB()},1000)
+    }
+
+    handlePlayer = (value) => {
+      this.setState({player: value, disable_btn : true});
+    }
   
     jumpTo(step) {
       this.setState({
@@ -87,6 +110,8 @@ export default class Game extends React.Component {
     }
   
     render() {
+
+      this.updateDB();
 
       const history = this.state.history;
       const current = history[this.state.stepNumber];
@@ -107,7 +132,7 @@ export default class Game extends React.Component {
       if (winner) {
         status = "Winner: " + winner;
       } else {
-        status = "Next player: " + (this.state.xIsNext ? "X" : "O");
+        status = "Player: " + (this.state.xIsNext ? "X" : "O") + " turn";
       }
   
       return (
@@ -119,8 +144,27 @@ export default class Game extends React.Component {
             />
           </div>
           <div className="game-info">
+          <div>
+            {this.state.disable_btn ? <p>You are player : {this.state.player}</p> : <p>Please choose X or O </p>}
+            {this.state.disable_btn ? null :
+              <button onClick={()=>{this.handlePlayer('X')}} disabled={this.state.disable_btn}>
+                X
+              </button>
+            }
+            {this.state.disable_btn ? null :
+              <button onClick={()=>{this.handlePlayer('O')}} disabled={this.state.disable_btn}>
+                O
+              </button>
+            }
+          </div>
+          {
+            !this.state.disable_btn ? null :
             <div>{status}</div>
+          }
+          {
+            !this.state.disable_btn ? null :
             <ol>{moves}</ol>
+          }
           </div>
         </div>
       );
