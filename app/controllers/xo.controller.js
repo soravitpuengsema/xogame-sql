@@ -41,9 +41,9 @@ exports.findAll = (req, res) => {
 };
 
 exports.update = (req, res) => {
-    const id = 1;
+    const id = 4;
     xo.update(req.body, {
-        where: { id: 1 }
+        where: { id: 4 }
     })
         .then(num => {
             if(num == 1) {

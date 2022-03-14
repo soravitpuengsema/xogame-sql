@@ -24,3 +24,5 @@ yarn-error.log*
 
 .package-lock.json
 /app/react-xo
+# Local Netlify folder
+.netlify
