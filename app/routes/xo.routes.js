@@ -5,7 +5,7 @@ module.exports = app => {
 
     router.post("/", xo.create);
 
-    router.get("/", xo.findAll);
+    router.get("/", xo.findOne);
 
     router.put("/", xo.update);
 

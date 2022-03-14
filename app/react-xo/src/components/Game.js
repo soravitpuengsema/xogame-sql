@@ -75,8 +75,9 @@ export default class Game extends React.Component {
     getDB(){
         XODataService.getAll()
         .then(response =>{
+            console.log('sdsds', response.data);
             const dbval = Object.values(response.data[0]);
-            //console.log(response.data)
+            console.log('dbval',dbval[2])
             console.log('getdb',JSON.parse(dbval[1]));
             this.setState({
                 history: JSON.parse(dbval[1]),

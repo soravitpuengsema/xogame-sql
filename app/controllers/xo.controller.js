@@ -40,6 +40,20 @@ exports.findAll = (req, res) => {
         });
 };
 
+exports.findOne = (req, res) => {
+    const id = 4;
+  
+    xo.findByPk(id)
+      .then(data => {
+        res.send(data);
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Error retrieving Board with id=" + 4
+        });
+      });
+  };
+
 exports.update = (req, res) => {
     const id = 4;
     xo.update(req.body, {
