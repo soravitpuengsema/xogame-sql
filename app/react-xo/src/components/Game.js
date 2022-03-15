@@ -16,7 +16,8 @@ export default class Game extends React.Component {
         player: null,
         disable_btn : false,
         stepNumber_temp: null,
-        updateCheck: false
+        updateCheck: false,
+        winner: null
       };
       this.handleClick = this.handleClick.bind(this);
       this.getDB();
@@ -60,7 +61,7 @@ export default class Game extends React.Component {
             xIP: 0,
             oIP: 0
         };
-        console.log('update',this.state.history);
+        console.log('updatedb',this.state.history);
         XODataService.update(data)
         .then(response => {
             console.log(response.data);
@@ -108,14 +109,13 @@ export default class Game extends React.Component {
           };
 
           if (this.state.updateCheck == false) { //getDB()
-            console.log('if getDB');
             this.setState({
               updateCheck: false
             });
             this.getDB();
           };
 
-        },2000)
+        },1500)
     }
 
     handlePlayer = (value) => {
@@ -131,12 +131,14 @@ export default class Game extends React.Component {
         ],
         stepNumber: 0,
         xIsNext: true,
-        player: null,
-        disable_btn : false,
-        xIsNext_db: 1
+        player: this.state.player,
+        //disable_btn : false,
+        stepNumber_temp: null,
+        updateCheck: false
       });
       this.updateDB();
     }
+
 
     jumpTo(step) {
       this.setState({
@@ -151,20 +153,14 @@ export default class Game extends React.Component {
       const current = history[this.state.stepNumber];
       const winner = calculateWinner(current.squares);
 
-      const moves = history.map((step, move) => {
-        const desc = move ?
-          'Go to move #' + move :
-          'Go to game start';
-        return (
-          <li key={move}>
-            <button onClick={() => this.jumpTo(move)}>{desc}</button>
-          </li>
-        );
-      });
-  
       let status;
+
+      const restart = winner ?
+      <button onClick={() => this.resetBoard()}>Restart</button> :
+      null ;
+
       if (winner) {
-        status = "Winner: " + winner;
+        status = "Winner: " + winner;   
       } else {
         status = "Player: " + (this.state.xIsNext ? "X" : "O") + " turn";
       }
@@ -197,7 +193,7 @@ export default class Game extends React.Component {
           }
           {
             !this.state.disable_btn ? null :
-            <ol>{moves}</ol>
+            <div>{restart}</div>
           }
           </div>
         </div>

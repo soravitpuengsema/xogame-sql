@@ -32,7 +32,12 @@ var data = {
     oIP: 0
 };
 
-xo.create(data);
+if (xo.findByPk(4)) {
+    console.log("Already have id number 4")
+} else {
+    console.log("create new id number 4")
+    xo.create(data);
+}
 
 //simple route
 app.get("/", (req, res) => { // req = request  res = respone
