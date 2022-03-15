@@ -14,9 +14,11 @@ export default class Game extends React.Component {
         stepNumber: 0,
         xIsNext: true,
         player: null,
-        disable_btn : false
+        disable_btn : false,
+        stepNumber_temp: null,
+        updateCheck: false
       };
-      console.log(this.state.history);
+      this.handleClick = this.handleClick.bind(this);
       this.getDB();
     }
 
@@ -48,9 +50,6 @@ export default class Game extends React.Component {
         stepNumber: history.length,
         xIsNext: !this.state.xIsNext
       });
-
-      this.updateDB();
-      //this.getDB();
     }
 
     updateDB() {
@@ -65,6 +64,9 @@ export default class Game extends React.Component {
         XODataService.update(data)
         .then(response => {
             console.log(response.data);
+            this.setState({
+              updateCheck: false
+          });
             //this.refreshList();
         })
         .catch(e => {
@@ -75,16 +77,16 @@ export default class Game extends React.Component {
     getDB(){
         XODataService.getAll()
         .then(response =>{
-            console.log('sdsds', response.data);
-            const dbval = Object.values(response.data[0]);
-            console.log('dbval',dbval[2])
+            const dbval = Object.values(response.data);
+            //console.log('dbval',dbval[2])
             console.log('getdb',JSON.parse(dbval[1]));
             this.setState({
                 history: JSON.parse(dbval[1]),
                 stepNumber: dbval[2],
                 xIsNext: dbval[3],
                 xIP: dbval[4],
-                oIP: dbval[5]
+                oIP: dbval[5],
+                //stepNumber_temp: dbval[2],
             });
         })
         .catch(e =>{
@@ -93,16 +95,49 @@ export default class Game extends React.Component {
     }
 
     componentDidMount(){
-      //this.updateDB()
-      this.getDB()
       this.interval = setInterval(
-        () => {this.getDB()},1000)
+        () => {
+          console.log(this.state.stepNumber,this.state.stepNumber_temp);
+
+          if (this.state.stepNumber !== this.state.stepNumber_temp) { //updateDB()
+            this.setState({
+              stepNumber_temp: this.state.stepNumber,
+              updateCheck: true //not getDB when update
+            });
+            this.updateDB();
+          };
+
+          if (this.state.updateCheck == false) { //getDB()
+            console.log('if getDB');
+            this.setState({
+              updateCheck: false
+            });
+            this.getDB();
+          };
+
+        },2000)
     }
 
     handlePlayer = (value) => {
       this.setState({player: value, disable_btn : true});
     }
   
+    resetBoard() {
+      this.setState({
+        history: [
+          {
+            squares: Array(9).fill(null)
+          }
+        ],
+        stepNumber: 0,
+        xIsNext: true,
+        player: null,
+        disable_btn : false,
+        xIsNext_db: 1
+      });
+      this.updateDB();
+    }
+
     jumpTo(step) {
       this.setState({
         stepNumber: step,
@@ -111,8 +146,6 @@ export default class Game extends React.Component {
     }
   
     render() {
-
-      this.updateDB();
 
       const history = this.state.history;
       const current = history[this.state.stepNumber];
