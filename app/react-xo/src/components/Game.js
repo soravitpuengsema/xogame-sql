@@ -155,7 +155,7 @@ export default class Game extends React.Component {
 
       let status;
 
-      const restart = winner ?
+      const restart = winner || this.state.stepNumber == 9 ?
       <button onClick={() => this.resetBoard()}>Restart</button> :
       null ;
 
